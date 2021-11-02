@@ -1,4 +1,8 @@
 <Defs>
+	<DesignatorDropdownGroupDef>
+		<defName>OwlFridge</defName> 
+	</DesignatorDropdownGroupDef>
+	
 	<ThingDef Name="OwlFridgeBase" ParentName="FurnitureBase" Abstract="True">
 		<thingClass>Building_Storage</thingClass>
 		<graphicData>
@@ -27,22 +31,38 @@
 			<preventDeteriorationOnTop>true</preventDeteriorationOnTop>
 			<ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
 			<fixedStorageSettings>
+				<priority>Critical</priority>
+				<filter>
+					<categories>
+						<li>FoodMeals</li>
+						<li>FoodRaw</li>
+						<li>PlantMatter</li>
+						<li>Drugs</li>
+					</categories>
+					<thingDefs>
+						<li>Chocolate</li>
+						<li>MedicineHerbal</li>
+						<li>Pemmican</li>
+						<li>Kibble</li>
+					</thingDefs>
+				</filter>
+			</fixedStorageSettings>
+			<defaultStorageSettings>
+				<priority>Critical</priority>
 				<filter>
 					<categories>
 						<li>FoodMeals</li>
 					</categories>
-					<thingDefs>
-						<li>Chocolate</li>
-					</thingDefs>
 				</filter>
-			</fixedStorageSettings>
+			</defaultStorageSettings>
 		</building>
 		<comps>
-			<li MayRequire="lwm.deepstorage" Class="LWM.DeepStorage.Properties" >
+			<li MayRequire="lwm.deepstorage" Class="LWM.DeepStorage.Properties">
 				<maxNumberStacks>5</maxNumberStacks>
-				<minTimeStoringTakes>35</minTimeStoringTakes>
-				<additionalTimeEachStack>5</additionalTimeEachStack>
-				<additionalTimeEachDef>2</additionalTimeEachDef>
+				<minNumberStacks>5</minNumberStacks>
+				<timeStoringTakes>100</timeStoringTakes>
+				<additionalTimeEachStack>60</additionalTimeEachStack>
+				<additionalTimeEachDef>60</additionalTimeEachDef>
 				<showContents>false</showContents>
 				<overlayType>SumOfAllItems</overlayType>
 			</li>
@@ -53,7 +73,9 @@
 		<modExtensions>
 			<li Class="SimpleFridge.Fridge" />
 		</modExtensions>
-		<designationCategory MayRequire="lwm.deepstorage">LWM_DS_Storage</designationCategory>
+		<designationCategory>Temperature</designationCategory>
+		<designatorDropdown>OwlFridge</designatorDropdown>
+		<clearBuildingArea>true</clearBuildingArea>
 	</ThingDef>
 	
 	<ThingDef ParentName="OwlFridgeBase">
@@ -64,6 +86,7 @@
 			<texPath>Owl_Fridge/Fridge_1</texPath>
 			<drawSize>(1.2,1.2)</drawSize>
 		</graphicData>
+		<uiIconScale>0.8</uiIconScale>
 		<costList>
 			<Steel>40</Steel>
 			<ComponentIndustrial>1</ComponentIndustrial>
