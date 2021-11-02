@@ -1,0 +1,112 @@
+<Defs>
+	<ThingDef Name="OwlFridgeBase" ParentName="FurnitureBase" Abstract="True">
+		<thingClass>Building_Storage</thingClass>
+		<graphicData>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawOffsetNorth>(0,0,-0.1)</drawOffsetNorth>
+			<drawOffsetSouth>(0,0,0.1)</drawOffsetSouth>
+		</graphicData>
+		<drawGUIOverlay>true</drawGUIOverlay>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.4</fillPercent>
+		<castEdgeShadows>true</castEdgeShadows>
+		<pathCost>50</pathCost>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<staticSunShadowHeight>0.5</staticSunShadowHeight>
+		<surfaceType>Item</surfaceType>
+		<canOverlapZones>false</canOverlapZones>
+		<inspectorTabs>
+			<li>ITab_Storage</li>
+			<li MayRequire="lwm.deepstorage">LWM.DeepStorage.ITab_DeepStorage_Inventory</li>
+		</inspectorTabs>
+		<researchPrerequisites>
+			<li>AirConditioning</li>
+		</researchPrerequisites>
+		<building>
+			<preventDeteriorationOnTop>true</preventDeteriorationOnTop>
+			<ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
+			<fixedStorageSettings>
+				<filter>
+					<categories>
+						<li>FoodMeals</li>
+					</categories>
+					<thingDefs>
+						<li>Chocolate</li>
+					</thingDefs>
+				</filter>
+			</fixedStorageSettings>
+		</building>
+		<comps>
+			<li MayRequire="lwm.deepstorage" Class="LWM.DeepStorage.Properties" >
+				<maxNumberStacks>5</maxNumberStacks>
+				<minTimeStoringTakes>35</minTimeStoringTakes>
+				<additionalTimeEachStack>5</additionalTimeEachStack>
+				<additionalTimeEachDef>2</additionalTimeEachDef>
+				<showContents>false</showContents>
+				<overlayType>SumOfAllItems</overlayType>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<modExtensions>
+			<li Class="SimpleFridge.Fridge" />
+		</modExtensions>
+		<designationCategory MayRequire="lwm.deepstorage">LWM_DS_Storage</designationCategory>
+	</ThingDef>
+	
+	<ThingDef ParentName="OwlFridgeBase">
+		<defName>owl_refrigerator</defName>
+		<label>refrigerator</label>
+		<description>A powered, sealed container which can be used to freeze and store perishable food.</description>
+		<graphicData>
+			<texPath>Owl_Fridge/Fridge_1</texPath>
+			<drawSize>(1.2,1.2)</drawSize>
+		</graphicData>
+		<costList>
+			<Steel>40</Steel>
+			<ComponentIndustrial>1</ComponentIndustrial>
+		</costList>
+		<statBases>
+			<MaxHitPoints>70</MaxHitPoints>
+			<Mass>15</Mass>
+			<WorkToBuild>1500</WorkToBuild>
+			<Flammability>0.5</Flammability>
+		</statBases>
+		<size>(1,1)</size>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>100</basePowerConsumption>
+			</li>
+		</comps>
+	</ThingDef>
+	
+	<ThingDef ParentName="OwlFridgeBase">
+		<defName>owl_doublerefrigerator</defName>
+		<label>doublewide refrigerator</label>
+		<description>A powered, sealed container which can be used to freeze and store perishable food. This unit is double the size.</description>
+		<graphicData>
+			<texPath>Owl_Fridge/Fridge_2</texPath>
+			<drawSize>(2.1,1.2)</drawSize>
+		</graphicData>
+		<costList>
+			<Steel>75</Steel>
+			<ComponentIndustrial>2</ComponentIndustrial>
+		</costList>
+		<statBases>
+			<MaxHitPoints>140</MaxHitPoints>
+			<Mass>20</Mass>
+			<WorkToBuild>2800</WorkToBuild>
+			<Flammability>0.5</Flammability>
+		</statBases>
+		<size>(2,1)</size>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>190</basePowerConsumption>
+			</li>
+		</comps>
+	</ThingDef>
+</Defs>
