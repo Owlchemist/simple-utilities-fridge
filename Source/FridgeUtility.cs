@@ -14,7 +14,7 @@ namespace SimpleFridge
 				CellRect cells = thing.parent.OccupiedRect();
 				foreach (var cell in cells)
 				{
-					fridgeGrid[map][map.cellIndices.CellToIndex(cell)] = thing.PowerOn;
+					fridgeGrid[map][cell.z * map.info.sizeInt.x + cell.x] = thing.PowerOn;
 				}
 			}
 		}
