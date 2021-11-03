@@ -9,12 +9,12 @@ namespace SimpleFridge
 		public static void UpdateFridgeGrid(CompPowerTrader thing)
 		{
 			Map map = thing?.parent.Map;
-			if (map != null)
+			if (map?.info != null)
 			{
-				CellRect cells = thing.parent.OccupiedRect();
+				CellRect cells = GenAdj.OccupiedRect(thing.parent.positionInt, thing.parent.rotationInt, thing.parent.def.size);
 				foreach (var cell in cells)
 				{
-					fridgeGrid[map][cell.z * map.info.sizeInt.x + cell.x] = thing.PowerOn;
+					fridgeGrid[map][cell.z * map.info.sizeInt.x + cell.x] = thing.powerOnInt;
 				}
 			}
 		}

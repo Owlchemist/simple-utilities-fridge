@@ -1,4 +1,3 @@
-
 using HarmonyLib;
 using Verse;
 using RimWorld;
@@ -12,7 +11,7 @@ namespace SimpleFridge
 	{
 		static public bool Prefix(Map map, IntVec3 c, ref float __result)
 		{
-			if (map != null && (fridgeGrid.TryGetValue(map)?[c.z * map.info.sizeInt.x + c.x] ?? false))
+			if (map?.info != null && fridgeGrid.TryGetValue(map)[c.z * map.info.sizeInt.x + c.x])
 			{
 				__result = 0f;
 				return false;
@@ -81,11 +80,8 @@ namespace SimpleFridge
 				tick = 0;
 				foreach (var fridge in fridgeCache)
 				{
-					ThingWithComps thing = fridge.Key;
-					var temperature = fridge.Key.GetRoom().Temperature;
-					float modifier = powerCurve.Evaluate(temperature);
-
-					fridge.Value.powerOutputInt = fridge.Value.Props.basePowerConsumption * modifier;
+					//Update power consumption
+					fridge.Value.powerOutputInt = fridge.Value.Props.basePowerConsumption * powerCurve.Evaluate(fridge.Key.GetRoom().Temperature);
 
 					//While we're at it, update the grid the current power status
 					FridgeUtility.UpdateFridgeGrid(fridge.Value);

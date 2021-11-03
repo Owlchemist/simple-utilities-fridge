@@ -9,6 +9,23 @@
 					<designationCategory>LWM_DS_Storage</designationCategory>
 				</value>
 			</li>
+			<li MayRequire="jangodsoul.simplestorage.ref" Class="PatchOperationAddModExtension">
+				<xpath>Defs/ThingDef[@Name="RefrigerationBase"]</xpath>
+				<value>
+					<li Class="SimpleFridge.Fridge" />
+				</value>
+			</li>
+			<li MayRequire="jangodsoul.simplestorage.ref" Class="PatchOperationAttributeAdd">
+				<xpath>Defs/ThingDef[@Name="RefrigerationBase"]/comps/li[@Class="RimFridge.CompProperties_Refrigerator"]</xpath>
+				<attribute>MayRequire</attribute>
+				<value>rimfridge.kv.rw</value>
+			</li>
+			<li MayRequire="sixdd.littlestorage2" Class="PatchOperationAddModExtension">
+				<xpath>Defs/ThingDef[defName="sixdd_Small_RimFridge_Refrigerator"]</xpath>
+				<value>
+					<li Class="SimpleFridge.Fridge" />
+				</value>
+			</li>
 		</operations>
 	</Operation>
 </Patch>

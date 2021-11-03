@@ -9,6 +9,12 @@
 			<graphicClass>Graphic_Multi</graphicClass>
 			<drawOffsetNorth>(0,0,-0.1)</drawOffsetNorth>
 			<drawOffsetSouth>(0,0,0.1)</drawOffsetSouth>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
 		</graphicData>
 		<drawGUIOverlay>true</drawGUIOverlay>
 		<altitudeLayer>Building</altitudeLayer>
@@ -31,28 +37,35 @@
 			<preventDeteriorationOnTop>true</preventDeteriorationOnTop>
 			<ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
 			<fixedStorageSettings>
-				<priority>Critical</priority>
 				<filter>
 					<categories>
-						<li>FoodMeals</li>
-						<li>FoodRaw</li>
+						<li>Foods</li>
 						<li>PlantMatter</li>
+						<li>BodyPartsNatural</li>
 						<li>Drugs</li>
 					</categories>
 					<thingDefs>
-						<li>Chocolate</li>
 						<li>MedicineHerbal</li>
-						<li>Pemmican</li>
-						<li>Kibble</li>
 					</thingDefs>
+					<specialFiltersToDisallow>
+						<li>AllowRotten</li>
+					</specialFiltersToDisallow>
+					<disallowedThingDefs>
+						<li MayRequire="ludeon.rimworld.ideology">Dye</li>
+						<li>Hay</li>
+						<li>Kibble</li>
+					</disallowedThingDefs>
 				</filter>
 			</fixedStorageSettings>
 			<defaultStorageSettings>
-				<priority>Critical</priority>
+				<priority>Important</priority>
 				<filter>
 					<categories>
 						<li>FoodMeals</li>
 					</categories>
+					<disallowedThingDefs>
+						<li>MealSurvivalPack</li>
+					</disallowedThingDefs>
 				</filter>
 			</defaultStorageSettings>
 		</building>
@@ -62,7 +75,6 @@
 				<minNumberStacks>5</minNumberStacks>
 				<timeStoringTakes>100</timeStoringTakes>
 				<additionalTimeEachStack>60</additionalTimeEachStack>
-				<additionalTimeEachDef>60</additionalTimeEachDef>
 				<showContents>false</showContents>
 				<overlayType>SumOfAllItems</overlayType>
 			</li>
@@ -84,7 +96,7 @@
 		<description>A powered, sealed container which can be used to freeze and store perishable food.</description>
 		<graphicData>
 			<texPath>Owl_Fridge/Fridge_1</texPath>
-			<drawSize>(1.2,1.2)</drawSize>
+			<drawSize>(1.1,1.2)</drawSize>
 		</graphicData>
 		<uiIconScale>0.8</uiIconScale>
 		<costList>
