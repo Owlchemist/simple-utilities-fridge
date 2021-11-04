@@ -3,28 +3,40 @@
 	<Operation Class="PatchOperationSequence">
 		<success>Always</success>
 		<operations>
+			<!-- Change from temperature to storage if using DS -->
 			<li MayRequire="lwm.deepstorage" Class="PatchOperationReplace">
 				<xpath>Defs/ThingDef[@Name="OwlFridgeBase"]/designationCategory</xpath>
 				<value>
 					<designationCategory>LWM_DS_Storage</designationCategory>
 				</value>
 			</li>
-			<li MayRequire="jangodsoul.simplestorage.ref" Class="PatchOperationAddModExtension">
-				<xpath>Defs/ThingDef[@Name="RefrigerationBase"]</xpath>
+			
+			<!-- Simple Storage, Deep Storage Plus, Little Storage -->
+			<li Class="PatchOperationAddModExtension">
+				<success>Always</success>
+				<xpath>Defs/ThingDef[@Name="RefrigerationBase" or defName="DSP_OrganFridge" or defName="sixdd_Small_RimFridge_Refrigerator"]</xpath>
 				<value>
 					<li Class="SimpleFridge.Fridge" />
 				</value>
 			</li>
+			
+			<!-- Deep Storage Plus needs a dummy power comp -->
+			<li Class="PatchOperationAdd">
+				<success>Always</success>
+				<xpath>Defs/ThingDef[defName="DSP_OrganFridge"]/comps[not(li[@Class="CompProperties_Power"])]</xpath>
+				<value>
+					<li Class="CompProperties_Power">
+						<compClass>CompPowerTrader</compClass>
+						<basePowerConsumption>0</basePowerConsumption>
+					</li>
+				</value>
+			</li>
+			
+			<!-- Make Simple Storage's RimFridge dependency non-vital -->
 			<li MayRequire="jangodsoul.simplestorage.ref" Class="PatchOperationAttributeAdd">
 				<xpath>Defs/ThingDef[@Name="RefrigerationBase"]/comps/li[@Class="RimFridge.CompProperties_Refrigerator"]</xpath>
 				<attribute>MayRequire</attribute>
 				<value>rimfridge.kv.rw</value>
-			</li>
-			<li MayRequire="sixdd.littlestorage2" Class="PatchOperationAddModExtension">
-				<xpath>Defs/ThingDef[defName="sixdd_Small_RimFridge_Refrigerator"]</xpath>
-				<value>
-					<li Class="SimpleFridge.Fridge" />
-				</value>
 			</li>
 		</operations>
 	</Operation>

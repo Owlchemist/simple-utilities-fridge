@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Verse;
 using RimWorld;
+using System.Linq;
 using static SimpleFridge.Mod_SimpleFridge;
 
 namespace SimpleFridge
@@ -11,11 +12,12 @@ namespace SimpleFridge
 	{
 		static public bool Prefix(Map map, IntVec3 c, ref float __result)
 		{
-			if (map?.info != null && fridgeGrid.TryGetValue(map)[c.z * map.info.sizeInt.x + c.x])
+			if (map?.info != null && fridgeGrid.TryGetValue(map).ElementAtOrDefault(c.z * map.info.sizeInt.x + c.x))
 			{
-				__result = 0f;
+				__result = -10f;
 				return false;
 			}
+			
 			return true;
 		}
     }
