@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Verse;
 using RimWorld;
-using System.Linq;
 using static SimpleFridge.Mod_SimpleFridge;
 
 namespace SimpleFridge
@@ -12,10 +11,15 @@ namespace SimpleFridge
 	{
 		static public bool Prefix(Map map, IntVec3 c, ref float __result)
 		{
-			if (map?.info != null && fridgeGrid.TryGetValue(map).ElementAtOrDefault(c.z * map.info.sizeInt.x + c.x))
+			bool[] grid;
+			if (map?.info != null && fridgeGrid.TryGetValue(map, out grid))
 			{
-				__result = -10f;
-				return false;
+				int index = c.z * map.info.sizeInt.x + c.x;
+				if (index > -1 && index < grid.Length && grid[index])
+				{
+					__result = -10f;
+					return false;
+				}
 			}
 			
 			return true;
@@ -82,6 +86,13 @@ namespace SimpleFridge
 				tick = 0;
 				foreach (var fridge in fridgeCache)
 				{
+					//Validate that this fridge is still legit
+					if (fridge.Key.Map == null)
+					{
+						fridgeCache.Remove(fridge.Key);
+						break;
+					}
+
 					//Update power consumption
 					fridge.Value.powerOutputInt = fridge.Value.Props.basePowerConsumption * powerCurve.Evaluate(fridge.Key.GetRoom().Temperature);
 
