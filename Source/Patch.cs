@@ -11,8 +11,7 @@ namespace SimpleFridge
 	{
 		static public bool Prefix(Map map, IntVec3 c, ref float __result)
 		{
-			bool[] grid;
-			if (map?.info != null && fridgeGrid.TryGetValue(map, out grid))
+			if (map?.info != null && fridgeGrid.TryGetValue(map, out bool[] grid))
 			{
 				int index = c.z * map.info.sizeInt.x + c.x;
 				if (index > -1 && index < grid.Length && grid[index])
@@ -106,6 +105,17 @@ namespace SimpleFridge
 	//Flush the cache on reload
     [HarmonyPatch(typeof(Game), nameof(Game.LoadGame))]
 	public class Patch_LoadGame
+	{
+        static void Prefix()
+        {
+            fridgeCache.Clear();
+			fridgeGrid.Clear();
+        }
+    }
+
+	//Flush the cache on new games
+    [HarmonyPatch(typeof(Game), nameof(Game.InitNewGame))]
+	public class Patch_InitNewGame
 	{
         static void Prefix()
         {
