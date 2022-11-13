@@ -14,7 +14,7 @@ namespace SimpleFridge
 				CellRect cells = GenAdj.OccupiedRect(thing.parent.positionInt, thing.parent.rotationInt, thing.parent.def.size);
 				foreach (var cell in cells)
 				{
-					fridgeGrid[map][cell.z * map.info.sizeInt.x + cell.x] = thing.powerOnInt;
+					fridgeGrid[map.uniqueID][cell.z * map.info.sizeInt.x + cell.x] = thing.powerOnInt;
 				}
 			}
 		}

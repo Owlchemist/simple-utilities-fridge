@@ -11,10 +11,10 @@ namespace SimpleFridge
 	{
 		static public bool Prefix(Map map, IntVec3 c, ref float __result)
 		{
-			if (map?.info != null && fridgeGrid.TryGetValue(map, out bool[] grid))
+			if (map?.info != null && (singleMapMode || fridgeGrid.TryGetValue(map.uniqueID, out activeFridgeGrid)))
 			{
 				int index = c.z * map.info.sizeInt.x + c.x;
-				if (index > -1 && index < grid.Length && grid[index])
+				if (index > -1 && index < activeFridgeGrid.Length && activeFridgeGrid[index])
 				{
 					__result = -10f;
 					return false;
@@ -55,13 +55,28 @@ namespace SimpleFridge
 		}
     }
 
+	//Update cache if a map is removed
+	[HarmonyPatch(typeof(Game), nameof(Game.DeinitAndRemoveMap))]
+	public class Patch_DeinitAndRemoveMap
+	{
+		static public void Postfix(Map __instance)
+		{
+			if (__instance != null)
+			{
+				fridgeGrid.Remove(__instance.uniqueID);
+				singleMapMode = false; //Let this reintialize on its own in case the activeGrid needs to be reset.
+			}
+		}
+	}
+
+
 	//This handles fridge grid cache construction
 	[HarmonyPatch(typeof(Map), nameof(Map.ConstructComponents))]
 	public class Patch_ConstructComponents
 	{
 		static public void Prefix(Map __instance)
 		{
-			if (!fridgeGrid.ContainsKey(__instance)) fridgeGrid.Add(__instance, new bool[__instance.info.NumCells]);
+			if (!fridgeGrid.ContainsKey(__instance.uniqueID)) fridgeGrid.Add(__instance.uniqueID, new bool[__instance.info.NumCells]);
 		}
     }
 
@@ -98,6 +113,9 @@ namespace SimpleFridge
 					//While we're at it, update the grid the current power status
 					FridgeUtility.UpdateFridgeGrid(fridge.Value);
 				}
+				//Check if there's only 1 map, allowing for reduced overhead
+				if (Find.Maps.Count == 1 && (activeFridgeGrid = fridgeGrid.TryGetValue(Find.CurrentMap.uniqueID)) != null ) singleMapMode = true;
+				else singleMapMode = false;
 			}
         }
     }

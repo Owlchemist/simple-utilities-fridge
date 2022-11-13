@@ -1,0 +1,158 @@
+<Defs>
+	<DesignatorDropdownGroupDef>
+		<defName>OwlFridge</defName> 
+	</DesignatorDropdownGroupDef>
+	
+	<ThingDef Name="OwlFridgeBase" ParentName="FurnitureBase" Abstract="True">
+		<thingClass>Building_Storage</thingClass>
+		<graphicData>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawOffsetNorth>(0,0,-0.1)</drawOffsetNorth>
+			<drawOffsetSouth>(0,0,0.1)</drawOffsetSouth>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<drawGUIOverlay>true</drawGUIOverlay>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.4</fillPercent>
+		<castEdgeShadows>true</castEdgeShadows>
+		<pathCost>50</pathCost>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<staticSunShadowHeight>0.5</staticSunShadowHeight>
+		<surfaceType>Item</surfaceType>
+		<canOverlapZones>false</canOverlapZones>
+		<inspectorTabs>
+			<li>ITab_Storage</li>
+			<li MayRequire="lwm.deepstorage">LWM.DeepStorage.ITab_DeepStorage_Inventory</li>
+		</inspectorTabs>
+		<researchPrerequisites>
+			<li>AirConditioning</li>
+		</researchPrerequisites>
+		<building>
+			<preventDeteriorationOnTop>true</preventDeteriorationOnTop>
+			<ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
+			<maxItemsInCell>3</maxItemsInCell>
+			<storageGroupTag>Fridge</storageGroupTag>
+			<fixedStorageSettings>
+				<filter>
+					<categories>
+						<li>Foods</li>
+						<li>PlantMatter</li>
+						<li>BodyPartsNatural</li>
+						<li>Drugs</li>
+						<li MayRequire="vanillaexpanded.vbrewe">VBE_Musts</li>
+					</categories>
+					<thingDefs>
+						<li>MedicineHerbal</li>
+						<li>Wort</li>
+						<li MayRequire="oskarpotocki.vanillafactionsexpanded.medievalmodule">VFEM_Must</li>
+						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_DroneGenome</li>
+						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_WarriorGenome</li>
+						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_RoyalGenome</li>
+						<li MayRequire="sarg.alphaanimals">AA_CactipineQuill</li>
+						<li MayRequire="ludeon.rimworld.biotech">Wastepack</li>
+					</thingDefs>
+					<specialFiltersToDisallow>
+						<li>AllowRotten</li>
+					</specialFiltersToDisallow>
+					<disallowedThingDefs>
+						<li MayRequire="ludeon.rimworld.ideology">Dye</li>
+						<li>Hay</li>
+						<li>Kibble</li>
+					</disallowedThingDefs>
+				</filter>
+			</fixedStorageSettings>
+			<defaultStorageSettings>
+				<priority>Important</priority>
+				<filter>
+					<categories>
+						<li>FoodMeals</li>
+					</categories>
+					<disallowedThingDefs>
+						<li>MealSurvivalPack</li>
+					</disallowedThingDefs>
+				</filter>
+			</defaultStorageSettings>
+			<paintable>true</paintable>
+		</building>
+		<comps>
+			<li MayRequire="lwm.deepstorage" Class="LWM.DeepStorage.Properties">
+				<maxNumberStacks>5</maxNumberStacks>
+				<minNumberStacks>5</minNumberStacks>
+				<timeStoringTakes>100</timeStoringTakes>
+				<additionalTimeEachStack>60</additionalTimeEachStack>
+				<showContents>false</showContents>
+				<overlayType>SumOfAllItems</overlayType>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<modExtensions>
+			<li Class="SimpleFridge.Fridge" />
+		</modExtensions>
+		<designationCategory>Temperature</designationCategory>
+		<designatorDropdown>OwlFridge</designatorDropdown>
+		<clearBuildingArea>true</clearBuildingArea>
+	</ThingDef>
+	
+	<ThingDef ParentName="OwlFridgeBase">
+		<defName>owl_refrigerator</defName>
+		<label>refrigerator</label>
+		<description>A powered, sealed container which can be used to freeze and store perishable food.</description>
+		<graphicData>
+			<texPath>Owl_Fridge/Fridge_1</texPath>
+			<drawSize>(1.2,1.2)</drawSize>
+		</graphicData>
+		<uiIconScale>0.8</uiIconScale>
+		<costList>
+			<Steel>40</Steel>
+			<ComponentIndustrial>1</ComponentIndustrial>
+		</costList>
+		<statBases>
+			<MaxHitPoints>70</MaxHitPoints>
+			<Mass>15</Mass>
+			<WorkToBuild>1500</WorkToBuild>
+			<Flammability>0.5</Flammability>
+		</statBases>
+		<size>(1,1)</size>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>80</basePowerConsumption>
+			</li>
+		</comps>
+	</ThingDef>
+	
+	<ThingDef ParentName="OwlFridgeBase">
+		<defName>owl_doublerefrigerator</defName>
+		<label>doublewide refrigerator</label>
+		<description>A powered, sealed container which can be used to freeze and store perishable food. This unit is double the size.</description>
+		<graphicData>
+			<texPath>Owl_Fridge/Fridge_2</texPath>
+			<drawSize>(2.4,1.2)</drawSize>
+		</graphicData>
+		<costList>
+			<Steel>75</Steel>
+			<ComponentIndustrial>2</ComponentIndustrial>
+		</costList>
+		<statBases>
+			<MaxHitPoints>140</MaxHitPoints>
+			<Mass>20</Mass>
+			<WorkToBuild>2800</WorkToBuild>
+			<Flammability>0.5</Flammability>
+		</statBases>
+		<size>(2,1)</size>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+			</li>
+		</comps>
+	</ThingDef>
+</Defs>

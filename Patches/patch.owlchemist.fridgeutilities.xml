@@ -11,10 +11,14 @@
 				</value>
 			</li>
 			
-			<!-- Simple Storage, Deep Storage Plus, Little Storage -->
+			<!-- Simple Storage, Deep Storage Plus, Little Storage, Rimstro -->
 			<li Class="PatchOperationAddModExtension">
 				<success>Always</success>
-				<xpath>Defs/ThingDef[@Name="RefrigerationBase" or defName="DSP_OrganFridge" or defName="sixdd_Small_RimFridge_Refrigerator"]</xpath>
+				<xpath>Defs/ThingDef[@Name="RefrigerationBase" or 
+					defName="DSP_OrganFridge" or 
+					defName="sixdd_Small_RimFridge_Refrigerator" or 
+					defName="RS_fridge" or 
+					defName="RS_CounterB"]</xpath>
 				<value>
 					<li Class="SimpleFridge.Fridge" />
 				</value>
@@ -37,6 +41,18 @@
 				<xpath>Defs/ThingDef[@Name="RefrigerationBase"]/comps/li[@Class="RimFridge.CompProperties_Refrigerator"]</xpath>
 				<attribute>MayRequire</attribute>
 				<value>rimfridge.kv.rw</value>
+			</li>
+			
+			<!-- Add power comps to rimstro fridge -->
+			<li MayRequire="lat.rimstro" Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="RS_fridge" or defName="RS_CounterB"]/comps[not(li[@Class="CompProperties_Flickable"]) and not(li[@Class="CompProperties_Power"])]</xpath>
+				<value>
+					<li Class="CompProperties_Flickable"/>
+					<li Class="CompProperties_Power">
+						<compClass>CompPowerTrader</compClass>
+						<basePowerConsumption>50</basePowerConsumption>
+					</li>
+				</value>
 			</li>
 		</operations>
 	</Operation>

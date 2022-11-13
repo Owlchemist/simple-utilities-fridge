@@ -43,9 +43,16 @@
 						<li>PlantMatter</li>
 						<li>BodyPartsNatural</li>
 						<li>Drugs</li>
+						<li MayRequire="vanillaexpanded.vbrewe">VBE_Musts</li>
 					</categories>
 					<thingDefs>
 						<li>MedicineHerbal</li>
+						<li>Wort</li>
+						<li MayRequire="oskarpotocki.vanillafactionsexpanded.medievalmodule">VFEM_Must</li>
+						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_DroneGenome</li>
+						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_WarriorGenome</li>
+						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_RoyalGenome</li>
+						<li MayRequire="sarg.alphaanimals">AA_CactipineQuill</li>
 					</thingDefs>
 					<specialFiltersToDisallow>
 						<li>AllowRotten</li>
@@ -96,7 +103,7 @@
 		<description>A powered, sealed container which can be used to freeze and store perishable food.</description>
 		<graphicData>
 			<texPath>Owl_Fridge/Fridge_1</texPath>
-			<drawSize>(1.1,1.2)</drawSize>
+			<drawSize>(1.2,1.2)</drawSize>
 		</graphicData>
 		<uiIconScale>0.8</uiIconScale>
 		<costList>
@@ -124,7 +131,7 @@
 		<description>A powered, sealed container which can be used to freeze and store perishable food. This unit is double the size.</description>
 		<graphicData>
 			<texPath>Owl_Fridge/Fridge_2</texPath>
-			<drawSize>(2.1,1.2)</drawSize>
+			<drawSize>(2.4,1.2)</drawSize>
 		</graphicData>
 		<costList>
 			<Steel>75</Steel>
