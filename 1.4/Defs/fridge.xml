@@ -50,6 +50,7 @@
 					<thingDefs>
 						<li>MedicineHerbal</li>
 						<li>Wort</li>
+						<li>Hay</li>
 						<li MayRequire="oskarpotocki.vanillafactionsexpanded.medievalmodule">VFEM_Must</li>
 						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_DroneGenome</li>
 						<li MayRequire="oskarpotocki.vfe.insectoid">VFEI_WarriorGenome</li>
@@ -80,6 +81,7 @@
 			</defaultStorageSettings>
 			<paintable>true</paintable>
 		</building>
+		<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
 		<comps>
 			<li MayRequire="lwm.deepstorage" Class="LWM.DeepStorage.Properties">
 				<maxNumberStacks>5</maxNumberStacks>
@@ -112,7 +114,7 @@
 		<uiIconScale>0.8</uiIconScale>
 		<costList>
 			<Steel>40</Steel>
-			<ComponentIndustrial>1</ComponentIndustrial>
+			<ComponentIndustrial>2</ComponentIndustrial>
 		</costList>
 		<statBases>
 			<MaxHitPoints>70</MaxHitPoints>
@@ -139,7 +141,7 @@
 		</graphicData>
 		<costList>
 			<Steel>75</Steel>
-			<ComponentIndustrial>2</ComponentIndustrial>
+			<ComponentIndustrial>4</ComponentIndustrial>
 		</costList>
 		<statBases>
 			<MaxHitPoints>140</MaxHitPoints>

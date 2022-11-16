@@ -45,8 +45,7 @@ namespace SimpleFridge
 	{
 		static public void Prefix(ThingWithComps __instance)
 		{
-			CompPowerTrader comp;
-			if (fridgeCache.TryGetValue(__instance, out comp))
+			if (fridgeCache.TryGetValue(__instance, out CompPowerTrader comp))
 			{
 				comp.powerOnInt = false;
 				FridgeUtility.UpdateFridgeGrid(comp);
