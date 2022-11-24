@@ -38,6 +38,7 @@
 			<ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
 			<maxItemsInCell>3</maxItemsInCell>
 			<storageGroupTag>Fridge</storageGroupTag>
+			<blueprintClass>Blueprint_Storage</blueprintClass>
 			<fixedStorageSettings>
 				<filter>
 					<categories>
