@@ -17,6 +17,9 @@
 			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
 		</li>
 	</modDependencies>
+	<loadBefore>
+		<li>vanillaexpanded.vpsycastse</li>
+	</loadBefore>
 	<loadAfter>
 		<li>lat.rimstro</li>
 	</loadAfter>

@@ -7,8 +7,8 @@ namespace SimpleFridge
     public class FridgeUtility
 	{
 		public static Dictionary<int, FridgeUtility> utilityCache = new Dictionary<int, FridgeUtility>(); //Int is the map ID
-		public Dictionary<ThingWithComps, CompPowerTrader> fridgeCache = new Dictionary<ThingWithComps, CompPowerTrader>();
-		public bool[] fridgeGrid = new bool[0];
+		public List<CompPowerTrader> fridgeCache = new List<CompPowerTrader>();
+		public bool[] fridgeGrid;
 		Map map;
 		//If temperature is freezing or lower, 10% power. If 15C (60F) or higher, 100%
 		static SimpleCurve powerCurve = new SimpleCurve
@@ -21,7 +21,7 @@ namespace SimpleFridge
 		{
 			this.map = map;
 			if(!utilityCache.ContainsKey(map.uniqueID)) utilityCache.Add(map.uniqueID, this);
-			else utilityCache[map.uniqueID] = this;
+			else Log.Warning("[Simple Utilities: Fridge] Tried to register a map that already exists.");
 			fridgeGrid = new bool[map.info.NumCells];
 		}
 
@@ -31,9 +31,8 @@ namespace SimpleFridge
 			return (index > -1 && index < fridgeGrid.Length && fridgeGrid[index]);
 		}
 
-		public void UpdateFridgeGrid(CompPowerTrader thing)
+		public void UpdateFridgeGrid(CompPowerTrader thing, Map map)
 		{
-			Map map = thing?.parent.Map;
 			if (map?.info != null)
 			{
 				CellRect cells = GenAdj.OccupiedRect(thing.parent.positionInt, thing.parent.rotationInt, thing.parent.def.size);
@@ -49,17 +48,19 @@ namespace SimpleFridge
 			foreach (var fridge in fridgeCache)
 			{
 				//Validate that this fridge is still legit
-				if (fridge.Key.Map == null)
+				Map map = fridge.parent.Map;
+				if (map == null)
 				{
-					fridgeCache.Remove(fridge.Key);
+					fridgeCache.Remove(fridge);
+					Log.Warning("[Simple Utilities: Fridge] Fridge had no map assigned.");
 					continue;
 				}
 
 				//Update power consumption
-				fridge.Value.powerOutputInt = fridge.Value.Props.basePowerConsumption * powerCurve.Evaluate(fridge.Key.GetRoom().Temperature);
+				fridge.powerOutputInt = fridge.Props.basePowerConsumption * powerCurve.Evaluate(fridge.parent.GetRoom().Temperature);
 
 				//While we're at it, update the grid the current power status
-				UpdateFridgeGrid(fridge.Value);
+				UpdateFridgeGrid(fridge, map);
 			}
 		}
 	}

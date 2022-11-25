@@ -1,12 +1,14 @@
 using HarmonyLib;
 using Verse;
 using RimWorld;
+using System.Linq;
 using static SimpleFridge.FridgeUtility;
 
 namespace SimpleFridge
 {
 	//Change the perceived temperature
 	[HarmonyPatch(typeof(GenTemperature), nameof(GenTemperature.GetTemperatureForCell))]
+	[HarmonyPriority(Priority.First)]
 	public class Patch_GetTemperatureForCell
 	{
 		static public bool Prefix(Map map, IntVec3 c, ref float __result)
@@ -33,22 +35,22 @@ namespace SimpleFridge
 		{
 			if (__instance.parent.def.HasModExtension<Fridge>() && utilityCache.TryGetValue(__instance.parent.Map?.uniqueID ?? -1, out FridgeUtility fridgeUtility))
 			{
-				fridgeUtility.fridgeCache.Add(__instance.parent, __instance);
-				fridgeUtility.UpdateFridgeGrid(__instance);
+				fridgeUtility.fridgeCache.Add(__instance);
+				fridgeUtility.UpdateFridgeGrid(__instance, __instance.parent.Map);
 			}
 		}
     }
 
 	//This handles cache deregistration
-	[HarmonyPatch(typeof(ThingWithComps), nameof(ThingWithComps.DeSpawn))]
+	[HarmonyPatch(typeof(CompPowerTrader), nameof(CompPowerTrader.PostDeSpawn))]
 	public class Patch_PostDeSpawn
 	{
-		static public void Prefix(ThingWithComps __instance)
+		static public void Postfix(CompPowerTrader __instance, Map map)
 		{
-			if (utilityCache.TryGetValue(__instance.Map?.uniqueID ?? -1, out FridgeUtility fridgeUtility) && fridgeUtility.fridgeCache.TryGetValue(__instance, out CompPowerTrader comp))
+			if (utilityCache.TryGetValue(map?.uniqueID ?? -1, out FridgeUtility fridgeUtility) && fridgeUtility.fridgeCache.Contains(__instance))
 			{
-				comp.powerOnInt = false; //Set the power off prior to the grid update
-				fridgeUtility.UpdateFridgeGrid(comp); //Update the bool grid
+				__instance.powerOnInt = false; //Set the power off prior to the grid update
+				fridgeUtility.UpdateFridgeGrid(__instance, map); //Update the bool grid
 				fridgeUtility.fridgeCache.Remove(__instance); //Clean up the cache
 			}
 		}
@@ -58,9 +60,9 @@ namespace SimpleFridge
 	[HarmonyPatch(typeof(Game), nameof(Game.DeinitAndRemoveMap))]
 	public class Patch_DeinitAndRemoveMap
 	{
-		static public void Postfix(Map __instance)
+		static public void Postfix(Map map)
 		{
-			if (__instance != null) utilityCache.Remove(__instance.uniqueID);
+			if (map != null && utilityCache.Remove(map.uniqueID)) Log.Message("[Simple Utilities: Fridge] Map removal detected.");
 		}
 	}
 
