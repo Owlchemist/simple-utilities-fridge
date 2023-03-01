@@ -57,7 +57,7 @@ namespace SimpleFridge
     }
 
 	//Update cache if a map is removed
-	[HarmonyPatch(typeof(Game), nameof(Game.DeinitAndRemoveMap))]
+	[HarmonyPatch(typeof(Game), nameof(Game.DeinitAndRemoveMap_NewTemp))]
 	public class Patch_DeinitAndRemoveMap
 	{
 		static public void Postfix(Map map)
