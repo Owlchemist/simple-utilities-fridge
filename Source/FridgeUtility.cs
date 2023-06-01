@@ -4,7 +4,8 @@ using System.Collections.Generic;
  
 namespace SimpleFridge
 {
-    public class FridgeUtility
+    //This essentially acts as a wannabe MapComponent, but since we don't have data to save or need ticking, this custom class is a slightly more lightweight approach
+	public class FridgeUtility
 	{
 		public static Dictionary<int, FridgeUtility> utilityCache = new Dictionary<int, FridgeUtility>(); //Int is the map ID
 		public List<CompPowerTrader> fridgeCache = new List<CompPowerTrader>();
@@ -21,7 +22,7 @@ namespace SimpleFridge
 		{
 			this.map = map;
 			if(!utilityCache.ContainsKey(map.uniqueID)) utilityCache.Add(map.uniqueID, this);
-			else Log.Warning("[Simple Utilities: Fridge] Tried to register a map that already exists.");
+			else Log.Warning("[Simple Utilities: Fridge] Tried to register a map that already exists: " + map.uniqueID.ToString());
 			fridgeGrid = new bool[map.info.NumCells];
 		}
 
@@ -31,28 +32,25 @@ namespace SimpleFridge
 			return (index > -1 && index < fridgeGrid.Length && fridgeGrid[index]);
 		}
 
-		public void UpdateFridgeGrid(CompPowerTrader thing, Map map)
+		public void UpdateFridgeGrid(CompPowerTrader thing)
 		{
-			if (map?.info != null)
+			foreach (var cell in GenAdj.OccupiedRect(thing.parent.positionInt, thing.parent.rotationInt, thing.parent.def.size))
 			{
-				CellRect cells = GenAdj.OccupiedRect(thing.parent.positionInt, thing.parent.rotationInt, thing.parent.def.size);
-				foreach (var cell in cells)
-				{
-					fridgeGrid[cell.z * map.info.sizeInt.x + cell.x] = thing.powerOnInt;
-				}
+				fridgeGrid[cell.z * map.info.sizeInt.x + cell.x] = thing.powerOnInt;
 			}
 		}
 
 		public void Tick()
 		{
-			foreach (var fridge in fridgeCache)
+			for (int i = fridgeCache.Count; i-- > 0;)
 			{
+				var fridge = fridgeCache[i];
+
 				//Validate that this fridge is still legit
-				Map map = fridge.parent.Map;
-				if (map == null)
+				if (map != fridge.parent.Map)
 				{
 					fridgeCache.Remove(fridge);
-					Log.Warning("[Simple Utilities: Fridge] Fridge had no map assigned.");
+					Log.Warning("[Simple Utilities: Fridge] Fridge had invalid map assigned.");
 					continue;
 				}
 
@@ -60,7 +58,7 @@ namespace SimpleFridge
 				fridge.powerOutputInt = fridge.Props.basePowerConsumption * powerCurve.Evaluate(fridge.parent.GetRoom().Temperature);
 
 				//While we're at it, update the grid the current power status
-				UpdateFridgeGrid(fridge, map);
+				UpdateFridgeGrid(fridge);
 			}
 		}
 	}

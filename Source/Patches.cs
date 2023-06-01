@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Verse;
 using RimWorld;
-using System.Linq;
+using RimWorld.Planet;
 using static SimpleFridge.FridgeUtility;
 
 namespace SimpleFridge
@@ -9,18 +9,14 @@ namespace SimpleFridge
 	//Change the perceived temperature
 	[HarmonyPatch(typeof(GenTemperature), nameof(GenTemperature.GetTemperatureForCell))]
 	[HarmonyPriority(Priority.First)]
-	public class Patch_GetTemperatureForCell
+	class Patch_GetTemperatureForCell
 	{
-		static public bool Prefix(Map map, IntVec3 c, ref float __result)
+		static bool Prefix(Map map, IntVec3 c, ref float __result)
 		{
-			if (utilityCache.TryGetValue(map?.uniqueID ?? -1, out FridgeUtility fridgeUtility))
+			if (utilityCache.TryGetValue(map?.uniqueID ?? -1, out FridgeUtility fridgeUtility) && fridgeUtility.GetAdjustedTemperature(c))
 			{
-				if (fridgeUtility.GetAdjustedTemperature(c))
-				{
-					__result = -10f;
-					return false;
-				}
-
+				__result = -10f;
+				return false;
 			}
 			
 			return true;
@@ -29,28 +25,29 @@ namespace SimpleFridge
 
 	//This handles cache registration
 	[HarmonyPatch(typeof(CompPowerTrader), nameof(CompPowerTrader.PostSpawnSetup))]
-	public class Patch_PostSpawnSetup
+	class Patch_PostSpawnSetup
 	{
-		static public void Postfix(CompPowerTrader __instance)
+		static void Postfix(CompPowerTrader __instance)
 		{
-			if (__instance.parent.def.HasModExtension<Fridge>() && utilityCache.TryGetValue(__instance.parent.Map?.uniqueID ?? -1, out FridgeUtility fridgeUtility))
+			Map map = __instance.parent.Map;
+			if (map != null && __instance.parent.def.HasModExtension<Fridge>() && utilityCache.TryGetValue(map.uniqueID, out FridgeUtility fridgeUtility))
 			{
 				fridgeUtility.fridgeCache.Add(__instance);
-				fridgeUtility.UpdateFridgeGrid(__instance, __instance.parent.Map);
+				fridgeUtility.UpdateFridgeGrid(__instance);
 			}
 		}
     }
 
 	//This handles cache deregistration
 	[HarmonyPatch(typeof(CompPowerTrader), nameof(CompPowerTrader.PostDeSpawn))]
-	public class Patch_PostDeSpawn
+	class Patch_PostDeSpawn
 	{
-		static public void Postfix(CompPowerTrader __instance, Map map)
+		static void Postfix(CompPowerTrader __instance, Map map)
 		{
-			if (utilityCache.TryGetValue(map?.uniqueID ?? -1, out FridgeUtility fridgeUtility) && fridgeUtility.fridgeCache.Contains(__instance))
+			if (map != null && utilityCache.TryGetValue(map.uniqueID, out FridgeUtility fridgeUtility) && fridgeUtility.fridgeCache.Contains(__instance))
 			{
 				__instance.powerOnInt = false; //Set the power off prior to the grid update
-				fridgeUtility.UpdateFridgeGrid(__instance, map); //Update the bool grid
+				fridgeUtility.UpdateFridgeGrid(__instance); //Update the bool grid
 				fridgeUtility.fridgeCache.Remove(__instance); //Clean up the cache
 			}
 		}
@@ -58,59 +55,42 @@ namespace SimpleFridge
 
 	//Update cache if a map is removed
 	[HarmonyPatch(typeof(Game), nameof(Game.DeinitAndRemoveMap_NewTemp))]
-	public class Patch_DeinitAndRemoveMap
+	class Patch_DeinitAndRemoveMap
 	{
-		static public void Postfix(Map map)
+		static void Postfix(Map map)
 		{
-			if (map != null && utilityCache.Remove(map.uniqueID)) Log.Message("[Simple Utilities: Fridge] Map removal detected.");
+			if (map != null && utilityCache.Remove(map.uniqueID) && Prefs.DevMode) Log.Message("[Simple Utilities: Fridge] Map removal detected.");
 		}
 	}
 
 
 	//This handles fridge grid cache construction
 	[HarmonyPatch(typeof(Map), nameof(Map.ConstructComponents))]
-	public class Patch_ConstructComponents
+	class Patch_ConstructComponents
 	{
-		static public void Prefix(Map __instance)
+		static void Postfix(Map __instance)
 		{
-			new FridgeUtility(__instance);
+			if (__instance.uniqueID != -1 && __instance.info != null) new FridgeUtility(__instance);
 		}
     }
 
-
-	//Every 600 ticks, check fridge room temperature and adjust its power curve
-	[HarmonyPatch (typeof(TickManager), nameof(TickManager.DoSingleTick))]
-	public class Patch_DoSingleTick
+	//We're patching here because it's a point of entry with the minimal overhead, unlikely to be bypassed by other mods, and only periodically ticked every 1000th tick.
+    [HarmonyPatch(typeof(GoodwillSituationManager), nameof(GoodwillSituationManager.RecalculateAll))]
+	class Patch_GoodwillSituationManager_RecalculateAll
 	{
-		static int tick;
-
         static void Postfix()
         {
-			if (++tick == 600) //about 10 seconds
-			{
-				tick = 0;
-				foreach (var item in utilityCache.Values) item.Tick();
-			}
+            foreach (var item in utilityCache.Values) item.Tick();
         }
     }
 
 	//Flush the cache on reload
-    [HarmonyPatch(typeof(Game), nameof(Game.LoadGame))]
-	public class Patch_LoadGame
+    [HarmonyPatch(typeof(World), nameof(World.FinalizeInit))]
+	class Patch_World_FinalizeInit
 	{
-        static void Prefix()
+        static void Postfix()
         {
-			utilityCache.Clear();
-        }
-    }
-
-	//Flush the cache on new games
-    [HarmonyPatch(typeof(Game), nameof(Game.InitNewGame))]
-	public class Patch_InitNewGame
-	{
-        static void Prefix()
-        {
-			utilityCache.Clear();
+			utilityCache = new System.Collections.Generic.Dictionary<int, FridgeUtility>();
         }
     }
 }
