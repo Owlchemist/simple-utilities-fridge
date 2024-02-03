@@ -55,7 +55,11 @@ namespace SimpleFridge
 				}
 
 				//Update power consumption
-				fridge.powerOutputInt = fridge.Props.basePowerConsumption * powerCurve.Evaluate(fridge.parent.GetRoom().Temperature);
+				Room fridgeRoom = fridge.parent.GetRoom();
+				float temperature;
+				if (fridgeRoom == null) temperature = map.mapTemperature.OutdoorTemp;
+				else temperature = fridgeRoom.Temperature;
+				fridge.powerOutputInt = fridge.Props.basePowerConsumption * powerCurve.Evaluate(temperature);
 
 				//While we're at it, update the grid the current power status
 				UpdateFridgeGrid(fridge);
